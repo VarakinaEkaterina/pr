@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/css/bootstrap.css" />
+    <style>
+        .entry-options {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .date-time {
+            position: absolute;
+            bottom: 0px;
+            right: 15px;
+            color: gray;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include ('./partials/header') %>
+        <br><br>
+        <div class="container">
+            <%#- include ('./partials/messages') %>
+                <% entries.forEach((entry) => { %>
+                    <div class="card entry" style="max-width: 100%;; position: relative;">
+                        <% if (user) { %>
+                            <% if (user.name === entry.username || user.role === 'admin') { %>
+                                <div class="entry-options">
+                                    <% if (user.role === 'admin' || user.name === entry.username) { %>
+                                        <% if (user.name === entry.username) { %>
+                                            <a href="/post/update/<%= entry.id %>" class="badge rounded-pill bg-warning" style="text-decoration: none;">Изменить</a>
+                                            <% } %>
+                                                <form action="/post/delete/<%= entry.id %>" method="POST">
+                                                    <button type="submit" class="badge rounded-pill bg-danger" style="border: none;">Удалить</button>
+                                                </form>
+                                                <% } %>
+                                </div>
+                                <% } %>
+                                    <% } %>
+                                        <div class="card-body ">
+                                            <h5 class="card-title">
+                                                <%= entry.title %>
+                                            </h5>
+
+                                            <p class="card-text">
+                                                <%= entry.content %>
+                                            </p>
+                                            </br>
+                                            <h6>Запостил :
+                                                <%= entry.username %>
+                                            </h6>
+                                            <p class="date-time">
+                                                <%
+                                                        const timestamp = new Date(entry.timestamp);
+                                                        const offset = 3; // Смещение для UTC+3
+
+                                                        const utcTimestamp = timestamp.getTime() + (offset * 60 * 60 * 1000);
+                                                        const dateInUtcPlus3 = new Date(utcTimestamp);
+
+                                                        const formattedDate = dateInUtcPlus3.toISOString().slice(0, 16).replace('T', ' ');
+                                                        %>
+                                                    <%= formattedDate %>
+                                            </p>
+                                        </div>
+                    </div>
+                    </br>
+                    <% }) %>
+                        <footer class="footer">
+                            <%- include("./partials/footer") %>
+                        </footer>
+</body>
+
+</html>
